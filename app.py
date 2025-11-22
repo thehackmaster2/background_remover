@@ -3,8 +3,8 @@ import logging
 import requests
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
-from PIL import Image
 import io
+import base64
 
 # Configure logging
 logging.basicConfig(
@@ -13,7 +13,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# API Keys (Replace with your actual keys)
+# API Keys
 TELEGRAM_BOT_TOKEN = "8217382418:AAFA6l0qynU5fyQZv2QLagkF7ZijVOgoxPY"
 REMOVE_BG_API_KEY = "cZx8tKGnMu1FVaFGVDdbNDQ6"
 
@@ -71,12 +71,8 @@ async def remove_background(update: Update, context: ContextTypes.DEFAULT_TYPE) 
         )
         
         if response.status_code == 200:
-            # Convert response to image
-            processed_image = Image.open(io.BytesIO(response.content))
-            
-            # Convert to bytes for sending
-            output_buffer = io.BytesIO()
-            processed_image.save(output_buffer, format='PNG')
+            # Send the processed image directly from remove.bg response
+            output_buffer = io.BytesIO(response.content)
             output_buffer.seek(0)
             
             # Send the processed image
@@ -127,12 +123,8 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
             )
             
             if response.status_code == 200:
-                # Convert response to image
-                processed_image = Image.open(io.BytesIO(response.content))
-                
-                # Convert to bytes for sending
-                output_buffer = io.BytesIO()
-                processed_image.save(output_buffer, format='PNG')
+                # Send the processed image directly
+                output_buffer = io.BytesIO(response.content)
                 output_buffer.seek(0)
                 
                 # Send the processed image
